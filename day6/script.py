@@ -32,4 +32,4 @@ for i in range(len(times)):
 one_race = eval_race(big_time, big_distance)
 
 print(f'The multiplied number of possible winning conditions is: {mult_wins}.')
-print(f'The number of possible winning conditions for one range is: {one_race}.')
+print(f'The number of possible winning conditions for one race is: {one_race}.')
