@@ -21,9 +21,15 @@ def eval_race(time_limit: int, win_dist: int) -> int:
 times = [int(item) for item in data[0].split()[1:]]
 distances = [int(item) for item in data[1].split()[1:]]
 
+big_time = int(''.join(data[0].split()[1:]))
+big_distance = int(''.join(data[1].split()[1:]))
+
 mult_wins = 1
 
 for i in range(len(times)):
-    mult_wins *= eval_race(times[i],distances[i])
+    mult_wins *= eval_race(times[i], distances[i])
 
-print(f'The Multiplied number of possible winning conditions is: {mult_wins}.')
+one_race = eval_race(big_time, big_distance)
+
+print(f'The multiplied number of possible winning conditions is: {mult_wins}.')
+print(f'The number of possible winning conditions for one range is: {one_race}.')
