@@ -6,10 +6,11 @@ import copy
 workdir = os.getcwd()
 inputfile = 'day7/input.txt'
 cards = [ 'A', 'K', 'Q', 'J', 'T', '9', '8', '7', '6', '5', '4', '3', '2']
+cards_J = [ 'A', 'K', 'Q', 'T', '9', '8', '7', '6', '5', '4', '3', '2', 'J']
 
 def is_larger(card1: str, card2: str) -> bool:
     """ Returns true if card1 is larger than card2 """
-    return (cards.index(card1) < cards.index(card2))
+    return (cards_J.index(card1) < cards_J.index(card2))
 
 def eval_type(type: dict) -> str:
     """ Returns key of weakest card """
@@ -32,6 +33,43 @@ def eval_type(type: dict) -> str:
                     break
     return weak_key 
 
+
+def optimal_joker(char_count: dict, jokers: int) -> dict:
+     
+     # five
+     for key in char_count:
+        if char_count[key] + jokers == 5:
+            char_count[key] += jokers
+            return char_count
+    
+     # four
+     for key in char_count:
+        if char_count[key] + jokers == 4:
+            char_count[key] += jokers
+            return char_count
+
+     # full house
+     test = 0
+     for key in char_count:
+         if char_count[key] == 2: 
+             test += 1
+             if test == 2 and char_count[key] == 2:
+                char_count[key] = 3
+                return char_count
+     # three
+     for key in char_count:
+         # three
+         if char_count[key] + jokers == 3:
+             char_count[key] += jokers
+             return char_count
+             
+     for key in char_count:
+         # pairs
+         if char_count[key] + jokers == 2:
+             char_count[key] += jokers
+             return char_count
+        
+
 def count_duplicates(s: str) -> list:
     char_count = {}
     list = []
@@ -43,6 +81,15 @@ def count_duplicates(s: str) -> list:
         else:
             char_count[char] = 1
 
+    #print('before: ',char_count)
+    # Evaluate jokers
+    if 'J' in char_count and 5 > char_count['J'] > 0:
+        jokers = char_count['J']
+        #print('jokers: ', jokers)
+        del char_count['J']
+        char_count = optimal_joker(char_count, jokers)
+       
+    #print('after: ',char_count)
     for key in char_count:
         if char_count[key] > 1:
             list.append(char_count[key])
@@ -66,6 +113,7 @@ high = {}
 # Assign type for each hand
 for index, hand in enumerate(hands):
     dup = count_duplicates(hand)
+    print(index, hand, dup)
     # High card
     if len(dup) == 0:
         high[index] = hand
@@ -88,8 +136,6 @@ for index, hand in enumerate(hands):
     elif dup[0] == 2:
         one[index] = hand
 
-    
-
 # Assign and evaluate rank
 
 types = [high, one, two, three, full, four, five]
@@ -101,28 +147,16 @@ while rank <= len(data):
         while len(type) > 0:
             if len(type) == 1:
                 total_rank += bids[int(next(iter(type)))] * rank 
-                print(bids[int(next(iter(type)))],rank)
+                #print(bids[int(next(iter(type)))],rank)
                 del type[next(iter(type))]
                 rank += 1
                 continue
             else:
                 key = eval_type(type)
                 total_rank += bids[int(key)] * rank
-                print(bids[int(key)], rank)
+                #print(bids[int(key)], rank)
                 del type[key] 
                 rank += 1
                 continue
 
 print(f'The total winnings are: {total_rank}.')
-
-
-
-        
-        
-
-
-
-
-    
-    
-
